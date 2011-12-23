@@ -43,11 +43,14 @@ which I tweaked slightly to generalize away from being Twitter specific.
 ## Examples
 
 To receive Meetup.com updates on all open events run
+
     ruby ./examples/meetup.rb
 
 To receive Twitter status updates (sampled stream) run
+
     ruby ./examples/twitter_filter.rb <twitter_username> <twitter_password>
 
 To track tweets about baseball run
+
     ruby ./examples/twitter_filter.rb <twitter_username> <twitter_password>
 
