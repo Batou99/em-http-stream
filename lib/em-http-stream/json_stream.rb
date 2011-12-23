@@ -25,11 +25,10 @@ module EventMachine
       :path           => '/',
       :content_type   => "application/x-www-form-urlencoded",
       :content        => '',
-      :path           => '/1/statuses/filter.json',
-      :host           => 'stream.twitter.com',
+      :host           => 'localhost',
       :port           => 80,
       :ssl            => false,
-      :user_agent     => 'TwitterStream',
+      :user_agent     => 'EM-HTTP-Stream',
       :timeout        => 0,
       :proxy          => ENV['HTTP_PROXY'],
       :auth           => nil,
@@ -181,7 +180,7 @@ module EventMachine
       @code    = 0
       @headers = {}
       @state   = :init
-      @buffer  = BufferedTokenizer.new("\r", MAX_LINE_LENGTH)
+      @buffer  = BufferedTokenizer.new("\n", MAX_LINE_LENGTH)
       @stream  = ''
 
       @parser  = Http::Parser.new

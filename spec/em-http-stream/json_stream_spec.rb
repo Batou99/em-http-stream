@@ -48,21 +48,29 @@ describe JSONStream do
       stream.should == 'TEST INSTANCE'
     end
 
-    it "should define default properties" do
+    it "should connect to default host, port and path" do
       EM.should_receive(:connect).with do |host, port, handler, opts|
-        host.should == 'stream.twitter.com'
+        host.should == 'localhost'
         port.should == 80
-        opts[:path].should == '/1/statuses/filter.json'
-        opts[:method].should == 'GET'
+        opts[:path].should == '/'
       end
-      stream = JSONStream.connect {}
+      stream = JSONStream.connect( {} )
+    end
+
+    it "should connect to provided host, port and path" do
+      EM.should_receive(:connect).with do |host, port, handler, opts|
+        host.should == 'a.host.com'
+        port.should == 99
+        opts[:path].should == '/some/path'
+      end
+      stream = JSONStream.connect( :host => 'a.host.com', :port=>99, :path=>'/some/path' )
     end
 
     it "should connect to the proxy if provided" do
       EM.should_receive(:connect).with do |host, port, handler, opts|
         host.should == 'my-proxy'
         port.should == 8080
-        opts[:host].should == 'stream.twitter.com'
+        opts[:host].should == 'localhost'
         opts[:port].should == 80
         opts[:proxy].should == 'http://my-proxy:8080'
       end
@@ -75,7 +83,7 @@ describe JSONStream do
     attr_reader :stream
     before :each do
       $body = File.readlines(fixture_path("twitter/tweets.txt"))
-      $body.each {|tweet| tweet.strip!; tweet << "\r" }
+      $body.each {|tweet| tweet.strip!; tweet << "\n" }
       $data_to_send = http_response(200,"OK",{},$body)
       $recieved_data = ''
       $close_connection = false
@@ -83,7 +91,7 @@ describe JSONStream do
 
     it "should add no params" do
       connect_stream
-      $recieved_data.should include('/1/statuses/filter.json HTTP')
+      $recieved_data.should include('/ HTTP')
     end
 
     it "should add custom params" do
@@ -259,7 +267,7 @@ describe JSONStream do
     end
 
     it "should ignore empty lines" do
-      body_chunks = ["{\"screen"+"_name\"",":\"user1\"}\r\r\r{","\"id\":9876}\r\r"]
+      body_chunks = ["{\"screen"+"_name\"",":\"user1\"}\n\n\n{","\"id\":9876}\n\n"]
       $data_to_send = http_response(200,"OK",{},body_chunks)
       items = []
       connect_stream do
@@ -273,7 +281,7 @@ describe JSONStream do
     end
 
     it "should parse full entities even if split" do
-      body_chunks = ["{\"id\"",":1234}\r{","\"id\":9876}"]
+      body_chunks = ["{\"id\"",":1234}\n{","\"id\":9876}"]
       $data_to_send = http_response(200,"OK",{},body_chunks)
       items = []
       connect_stream do
