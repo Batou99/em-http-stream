@@ -2,10 +2,10 @@ require 'rubygems'
 lib_path = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift lib_path unless $LOAD_PATH.include?(lib_path)
 
-require 'twitter/json_stream'
+require 'em-http-stream/json_stream'
 
 EventMachine::run {
-  stream = Twitter::JSONStream.connect(
+  stream = EventMachine::JSONStream.connect(
     :path    => '/1/statuses/filter.json',
     :auth    => 'LOGIN:PASSWORD',
     :method  => 'POST',

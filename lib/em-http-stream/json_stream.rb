@@ -4,7 +4,7 @@ require 'uri'
 require 'simple_oauth'
 require 'http/parser'
 
-module Twitter
+module EventMachine
   class JSONStream < EventMachine::Connection
     MAX_LINE_LENGTH = 1024*1024
 

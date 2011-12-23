@@ -1,8 +1,8 @@
 $:.unshift "."
 require File.dirname(__FILE__) + '/../spec_helper.rb'
-require 'twitter/json_stream'
+require 'em-http-stream/json_stream'
 
-include Twitter
+include EventMachine
 
 Host = "127.0.0.1"
 Port = 9550
