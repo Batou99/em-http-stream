@@ -1,27 +1,32 @@
-# twitter-stream
+# em-http-stream
 
-Simple Ruby client library for [twitter streaming API](http://apiwiki.twitter.com/Streaming-API-Documentation). 
-Uses [EventMachine](http://rubyeventmachine.com/) for connection handling. Adheres to twitter's [reconnection guidline](http://apiwiki.twitter.com/Streaming-API-Documentation#Connecting).
-
+Simple Ruby client library for consuming HTTP streams with [chunked transfer encoding](http://en.wikipedia.org/wiki/Chunked_transfer_encoding).
+Examples of such streams are Twitter's Streaming API, Meetup Streaming API, and hopefully many more in the future.
+Uses [EventMachine](http://rubyeventmachine.com/) for connection handling. Handles re-connections.
 JSON format only.
+
+## Credits
+
+All credit should go to [Vladimir Kolesnikov](https://github.com/voloko/twitter-stream) for his awesome twitter-stream gem
+which I tweaked slightly to generalize away from being Twitter specific.
 
 ## Install
 
-    sudo gem install twitter-stream -s http://gemcutter.org
+    gem install em-http-stream
 
 ## Usage
 
     require 'rubygems'
-    require 'twitter/json_stream'
+    require 'em-http-stream/json_stream'
     
     EventMachine::run {
-      stream = Twitter::JSONStream.connect(
+      stream = EventMachine::JSONStream.connect(
         :path    => '/1/statuses/filter.json?track=football',
         :auth    => 'LOGIN:PASSWORD'
       )
 
       stream.each_item do |item|
-        # Do someting with unparsed JSON item.
+        # item is unparsed JSON string.
       end
 
       stream.on_error do |message|
@@ -37,6 +42,12 @@ JSON format only.
 
 ## Examples
 
-Open examples/reader.rb. Replace LOGIN:PASSWORD with your real twitter login and password. And
-    ruby examples/reader.rb
+To receive Meetup.com updates on all open events run
+    ruby ./examples/meetup.rb
+
+To receive Twitter status updates (sampled stream) run
+    ruby ./examples/twitter_filter.rb <twitter_username> <twitter_password>
+
+To track tweets about baseball run
+    ruby ./examples/twitter_filter.rb <twitter_username> <twitter_password>
 
