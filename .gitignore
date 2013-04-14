@@ -3,7 +3,6 @@
 .DS_Store
 coverage
 rdoc
-pkg
 Gemfile.lock
 coverage/*
 .yardoc/*
